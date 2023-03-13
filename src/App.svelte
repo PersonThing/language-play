@@ -1,19 +1,22 @@
 <main>
-  <nav use:links>
-    <a href="/language-play/pt">PT</a>
-    <a href="/language-play/es">ES</a>
+  <nav>
+    <a href="/language-play/#/pt">PT</a>
+    <a href="/language-play/#/es">ES</a>
   </nav>
 
-  <Router basepath="/language-play">
-    <Route component={ConjugatorPT} />
-    <Route path="/es" component={ConjugatorES} />
-  </Router>
+  <Router basepath="/language-play" {routes} />
 </main>
 
 <script>
-  import { Router, Route, links } from 'svelte-routing'
+  import Router from 'svelte-spa-router'
   import ConjugatorPT from './lib/ConjugatorPT.svelte'
   import ConjugatorES from './lib/ConjugatorES.svelte'
+
+  const routes = {
+    '/pt': ConjugatorPT,
+    '/es': ConjugatorES,
+    '*': ConjugatorPT,
+  }
 </script>
 
 <style lang="scss">

@@ -1,10 +1,4 @@
-const strip = inf => inf.substring(0, inf.length - 2)
-const stripR = inf => inf.substring(0, inf.length - 1)
-const ifA = (inf, text) => (/ar$/.test(inf) ? text : '')
-const ifE = (inf, text) => (/er$/.test(inf) ? text : '')
-const ifI = (inf, text) => (/ir$/.test(inf) ? text : '')
-const ifIorE = (inf, text) => (/(i|e)r$/.test(inf) ? text : '')
-const participio = inf => strip(inf) + ifA(inf, 'ado') + ifIorE(inf, 'ido')
+import { strip, stripR, ifA, ifE, ifI, ifEI, participio } from './verb-tenses-utils.js'
 
 const tensesMap = {
   particípio: {
@@ -15,47 +9,57 @@ const tensesMap = {
   },
   gerundio: {
     examples: {
-      'I am reading': 'Eu estou lendo',
+      'I am eating': 'Eu estou comendo',
       "He's thinking": 'Ele está pensando',
     },
     '*': inf => stripR(inf) + 'ndo',
   },
   presente: {
     examples: {
-      'I read': 'Eu leio',
+      'I eat': 'Eu como',
       'You eat': 'Você come',
     },
     eu: inf => strip(inf) + 'o',
-    tu: inf => strip(inf) + ifA(inf, 'as') + ifIorE(inf, 'es'),
+    tu: inf => strip(inf) + ifA(inf, 'as') + ifEI(inf, 'es'),
     vós: inf => strip(inf) + ifA(inf, 'ais') + ifI(inf, 'is') + ifE(inf, 'eis'),
-    'você, ele, ela': inf => strip(inf) + ifA(inf, 'a') + ifIorE(inf, 'e'),
-    'vocês, eles, elas': inf => strip(inf) + ifA(inf, 'am') + ifIorE(inf, 'em'),
+    'você, ele, ela': inf => strip(inf) + ifA(inf, 'a') + ifEI(inf, 'e'),
+    'vocês, eles, elas': inf => strip(inf) + ifA(inf, 'am') + ifEI(inf, 'em'),
     nós: inf => strip(inf) + ifA(inf, 'amos') + ifE(inf, 'emos') + ifI(inf, 'imos'),
   },
   'pretérito imperfeito': {
     examples: {
-      'I read a lot when I was little': 'Eu lia muito quando era criança',
+      'I ate a lot when I was little': 'Eu comia muito quando era criança',
     },
-    'eu, você, ele, ela': inf => strip(inf) + ifA(inf, 'ava') + ifIorE(inf, 'ia'),
-    tu: inf => strip(inf) + ifA(inf, 'ava') + ifIorE(inf, 'ias'),
-    vós: inf => strip(inf) + ifA(inf, 'áveis') + ifIorE(inf, 'íeis'),
-    'vocês, eles, elas': inf => strip(inf) + ifA(inf, 'ava') + ifIorE(inf, 'ia'),
-    nós: inf => strip(inf) + ifA(inf, 'ávamos') + ifIorE(inf, 'íamos'),
+    'eu, você, ele, ela': inf => strip(inf) + ifA(inf, 'ava') + ifEI(inf, 'ia'),
+    tu: inf => strip(inf) + ifA(inf, 'ava') + ifEI(inf, 'ias'),
+    vós: inf => strip(inf) + ifA(inf, 'áveis') + ifEI(inf, 'íeis'),
+    'vocês, eles, elas': inf => strip(inf) + ifA(inf, 'ava') + ifEI(inf, 'ia'),
+    nós: inf => strip(inf) + ifA(inf, 'ávamos') + ifEI(inf, 'íamos'),
   },
   'pretérito perfeito': {
     examples: {
-      'I already read that': 'Eu já li isso',
+      'I already ate that': 'Eu já comi isso',
     },
-    eu: inf => strip(inf) + ifA(inf, 'ei') + ifIorE(inf, 'i'),
+    eu: inf => strip(inf) + ifA(inf, 'ei') + ifEI(inf, 'i'),
     tu: inf => strip(inf) + ifA(inf, 'aste') + ifE(inf, 'este') + ifI(inf, 'iste'),
     vós: inf => strip(inf) + ifA(inf, 'astes') + ifE(inf, 'estes') + ifI(inf, 'istes'),
     'você, ele, ela': inf => strip(inf) + ifA(inf, 'ou') + ifE(inf, 'eu') + ifI(inf, 'iu'),
     'vocês, eles, elas': inf => strip(inf) + ifA(inf, 'aram') + ifE(inf, 'eram') + ifI(inf, 'iram'),
     nós: inf => strip(inf) + ifA(inf, 'amos') + ifE(inf, 'emos') + ifI(inf, 'imos'),
   },
+  'pretérito mais-que-perfeito': {
+    examples: {
+      'When I noticed, the water had already overflowed from the bathtub': 'Quando notei, a água já transbordara da banheira',
+    },
+    'eu, você, ele, ela': inf => inf + 'a',
+    tu: inf => inf + 'as',
+    vós: inf => inf + 'ais',
+    'vocês, eles, elas': inf => inf + 'am',
+    nós: inf => inf + 'amos',
+  },
   'futuro do pretérito': {
     examples: {
-      'I would read that': 'Eu leria isso',
+      'I would eat that': 'Eu comeria isso',
     },
     'eu, você, ele, ela': inf => inf + ifA(inf, 'ia') + ifE(inf, 'ia') + ifI(inf, 'ia'),
     tu: inf => inf + ifA(inf, 'ias') + ifE(inf, 'ias') + ifI(inf, 'ias'),
@@ -65,7 +69,7 @@ const tensesMap = {
   },
   'futuro do presente': {
     examples: {
-      'I will read that': 'Eu lerei isso',
+      'I will eat that': 'Eu comerei isso',
     },
     eu: inf => inf + 'ei',
     tu: inf => inf + 'ás',
@@ -76,28 +80,28 @@ const tensesMap = {
   },
   imperativo: {
     examples: {
-      'Read it': 'Leia isso',
+      'Eat it': 'Coma isso',
     },
-    você: inf => strip(inf) + ifA(inf, 'e') + ifIorE(inf, 'a'),
-    tu: inf => strip(inf) + ifA(inf, 'a') + ifIorE(inf, 'e'),
+    você: inf => strip(inf) + ifA(inf, 'e') + ifEI(inf, 'a'),
+    tu: inf => strip(inf) + ifA(inf, 'a') + ifEI(inf, 'e'),
     vós: inf => strip(inf) + ifA(inf, 'ai') + ifE(inf, 'ei') + ifI(inf, 'i'),
-    vocês: inf => strip(inf) + ifA(inf, 'em') + ifIorE(inf, 'am'),
-    nós: inf => strip(inf) + ifA(inf, 'emos') + ifIorE(inf, 'amos'),
+    vocês: inf => strip(inf) + ifA(inf, 'em') + ifEI(inf, 'am'),
+    nós: inf => strip(inf) + ifA(inf, 'emos') + ifEI(inf, 'amos'),
   },
   'subjuntivo presente': {
     examples: {
-      'I want you to read that': 'Eu quero que você leia isso',
+      'I want you to eat that': 'Eu quero que você coma isso',
       "Even though I like it, I can't eat it": 'Mesmo que eu goste dele, não posso comê-lo',
     },
-    'eu, você, ele, ela': inf => strip(inf) + ifA(inf, 'e') + ifIorE(inf, 'a'),
-    tu: inf => strip(inf) + ifA(inf, 'es') + ifIorE(inf, 'as'),
-    vós: inf => strip(inf) + ifA(inf, 'eis') + ifIorE(inf, 'ais'),
-    vocês: inf => strip(inf) + ifA(inf, 'em') + ifIorE(inf, 'am'),
-    nós: inf => strip(inf) + ifA(inf, 'emos') + ifIorE(inf, 'amos'),
+    'eu, você, ele, ela': inf => strip(inf) + ifA(inf, 'e') + ifEI(inf, 'a'),
+    tu: inf => strip(inf) + ifA(inf, 'es') + ifEI(inf, 'as'),
+    vós: inf => strip(inf) + ifA(inf, 'eis') + ifEI(inf, 'ais'),
+    vocês: inf => strip(inf) + ifA(inf, 'em') + ifEI(inf, 'am'),
+    nós: inf => strip(inf) + ifA(inf, 'emos') + ifEI(inf, 'amos'),
   },
   'subjuntivo pretérito imperfeito': {
     examples: {
-      'If you had read the book, you would understand': 'Se você lesse o livro, entenderia',
+      'If you ate it, you would understand': 'Se você o comesse, entenderia',
       'If I had money, I would buy a car': 'Se eu tivesse dinheiro, eu compraria um carro',
     },
     'eu, você, ele, ela': inf => stripR(inf) + 'sse',
@@ -108,8 +112,7 @@ const tensesMap = {
   },
   'subjuntivo futuro': {
     examples: {
-      'If you had read the book, you would understand': 'Se você lesse o livro, entenderia',
-      'If I had money, I would buy a car': 'Se eu tivesse dinheiro, eu compraria um carro',
+      'Tell me when you get there': 'Me conta quando você chegar'
     },
     'eu, você, ele, ela': inf => inf,
     tu: inf => inf + 'es',
@@ -119,7 +122,7 @@ const tensesMap = {
   },
   'pretérito perfeito composto do indicativo': {
     examples: {
-      'I have been reading a lot lately': 'Eu tenho lido muito ultimamente',
+      'I have been eating a lot lately': 'Eu tenho comido muito ultimamente',
     },
     eu: inf => 'tenho ' + participio(inf),
     tu: inf => 'tens ' + participio(inf),
@@ -130,7 +133,7 @@ const tensesMap = {
   },
   'pretérito mais-que-perfeito composto do indicativo': {
     examples: {
-      'I had been reading a lot, but I stopped': 'Eu tinha lido muito, mas parei',
+      'I had been eating a lot, but I stopped': 'Eu tinha comido muito, mas parei',
     },
     'eu, você, ele, ela': inf => 'tinha ' + participio(inf),
     tu: inf => 'tinhas ' + participio(inf),
@@ -140,7 +143,7 @@ const tensesMap = {
   },
   'futuro do presente composto do indicativo': {
     examples: {
-      'Tomorrow, I will have read three more books': 'Amanhã, eu terei lido mais três livros',
+      'Tomorrow, I will have eaten three more sandwiches': 'Amanhã, eu terei comido mais três sanduíches',
     },
     eu: inf => 'terei ' + participio(inf),
     tu: inf => 'terás ' + participio(inf),
@@ -151,7 +154,7 @@ const tensesMap = {
   },
   'futuro do pretérito composto do indicativo': {
     examples: {
-      'I would have read the book': 'Eu teria lido o livro',
+      'I would have eaten the pizza': 'Eu teria comido a pizza',
     },
     'eu, você, ele, ela': inf => 'teria ' + participio(inf),
     tu: inf => 'terias ' + participio(inf),

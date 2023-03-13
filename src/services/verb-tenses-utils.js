@@ -1,0 +1,7 @@
+export const strip = inf => inf.substring(0, inf.length - 2)
+export const stripR = inf => inf.substring(0, inf.length - 1)
+export const ifA = (inf, text) => (/ar$/.test(inf) ? text : '')
+export const ifE = (inf, text) => (/er$/.test(inf) ? text : '')
+export const ifI = (inf, text) => (/ir$/.test(inf) ? text : '')
+export const ifEI = (inf, text) => (/(i|e)r$/.test(inf) ? text : '')
+export const participio = inf => strip(inf) + ifA(inf, 'ado') + ifEI(inf, 'ido')
