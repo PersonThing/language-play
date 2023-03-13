@@ -1,11 +1,11 @@
 <main>
   <nav use:links>
-    <a href="/pt">PT</a>
-    <a href="/es">ES</a>
+    <a href="/language-play/pt">PT</a>
+    <a href="/language-play/es">ES</a>
   </nav>
 
-  <Router>
-    <Route path="/pt" component={ConjugatorPT} />
+  <Router basepath="/language-play">
+    <Route component={ConjugatorPT} />
     <Route path="/es" component={ConjugatorES} />
   </Router>
 </main>

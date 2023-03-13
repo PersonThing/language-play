@@ -4,6 +4,7 @@ import sveltePreprocess from 'svelte-preprocess'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/language-play/',
   plugins: [svelte({
     preprocess: sveltePreprocess({
       preserve: ["ld+json"],

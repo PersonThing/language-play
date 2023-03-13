@@ -6,26 +6,6 @@ const ifI = (inf, text) => (/ir$/.test(inf) ? text : '')
 const ifIorE = (inf, text) => (/(i|e)r$/.test(inf) ? text : '')
 const participio = inf => strip(inf) + ifA(inf, 'ado') + ifIorE(inf, 'ido')
 
-export const refine = (inf, conjugated) => {
-  // *igir -> ijo, ija, ijam, ijamos
-  // eg: corrigir
-  if (/igir$/.test(inf)) return conjugated.replace(/iga(s|m|mos)?$/, 'ija$1').replace(/igo(m|mos)?$/, 'ijo$1')
-
-  // *gar -> gue, guei
-  // eg: pagar
-  if (/gar$/.test(inf)) return conjugated.replace(/ge(s|i|m|mos)?$/, 'gue$1')
-
-  // *car -> que, quei
-  // eg: checar
-  if (/car$/.test(inf)) return conjugated.replace(/ce(s|i|m|mos)?$/, 'que$1')
-
-  // *erir -> iro, ira, iram, iramos
-  // eg: prefirir
-  if (/erir$/.test(inf)) return conjugated.replace(/er(o|a)(s|m|mos)?$/, 'ir$1$2')
-
-  return conjugated
-}
-
 const tensesMap = {
   particípio: {
     examples: {
@@ -58,6 +38,7 @@ const tensesMap = {
     },
     'eu, você, ele, ela': inf => strip(inf) + ifA(inf, 'ava') + ifIorE(inf, 'ia'),
     tu: inf => strip(inf) + ifA(inf, 'ava') + ifIorE(inf, 'ias'),
+    vós: inf => strip(inf) + ifA(inf, 'áveis') + ifIorE(inf, 'íeis'),
     'vocês, eles, elas': inf => strip(inf) + ifA(inf, 'ava') + ifIorE(inf, 'ia'),
     nós: inf => strip(inf) + ifA(inf, 'ávamos') + ifIorE(inf, 'íamos'),
   },
@@ -67,6 +48,7 @@ const tensesMap = {
     },
     eu: inf => strip(inf) + ifA(inf, 'ei') + ifIorE(inf, 'i'),
     tu: inf => strip(inf) + ifA(inf, 'aste') + ifE(inf, 'este') + ifI(inf, 'iste'),
+    vós: inf => strip(inf) + ifA(inf, 'astes') + ifE(inf, 'estes') + ifI(inf, 'istes'),
     'você, ele, ela': inf => strip(inf) + ifA(inf, 'ou') + ifE(inf, 'eu') + ifI(inf, 'iu'),
     'vocês, eles, elas': inf => strip(inf) + ifA(inf, 'aram') + ifE(inf, 'eram') + ifI(inf, 'iram'),
     nós: inf => strip(inf) + ifA(inf, 'amos') + ifE(inf, 'emos') + ifI(inf, 'imos'),
@@ -75,10 +57,11 @@ const tensesMap = {
     examples: {
       'I would read that': 'Eu leria isso',
     },
-    'eu, você, ele, ela': inf => strip(inf) + ifA(inf, 'aria') + ifE(inf, 'eria') + ifI(inf, 'iria'),
-    tu: inf => strip(inf) + ifA(inf, 'arias') + ifE(inf, 'erias') + ifI(inf, 'irias'),
-    'vocês, eles, elas': inf => strip(inf) + ifA(inf, 'ariam') + ifE(inf, 'eriam') + ifI(inf, 'iriam'),
-    nós: inf => strip(inf) + ifA(inf, 'aríamos') + ifE(inf, 'eríamos') + ifI(inf, 'iríamos'),
+    'eu, você, ele, ela': inf => inf + ifA(inf, 'ia') + ifE(inf, 'ia') + ifI(inf, 'ia'),
+    tu: inf => inf + ifA(inf, 'ias') + ifE(inf, 'ias') + ifI(inf, 'ias'),
+    vós: inf => inf + ifA(inf, 'íeis') + ifE(inf, 'íeis') + ifI(inf, 'íeis'),
+    'vocês, eles, elas': inf => inf + ifA(inf, 'iam') + ifE(inf, 'iam') + ifI(inf, 'iam'),
+    nós: inf => inf + ifA(inf, 'íamos') + ifE(inf, 'íamos') + ifI(inf, 'íamos'),
   },
   'futuro do presente': {
     examples: {
@@ -86,6 +69,7 @@ const tensesMap = {
     },
     eu: inf => inf + 'ei',
     tu: inf => inf + 'ás',
+    vós: inf => inf + 'eis',
     'você, ele, ela': inf => inf + 'á',
     'vocês, eles, elas': inf => inf + 'ão',
     nós: inf => inf + 'emos',
@@ -96,6 +80,7 @@ const tensesMap = {
     },
     você: inf => strip(inf) + ifA(inf, 'e') + ifIorE(inf, 'a'),
     tu: inf => strip(inf) + ifA(inf, 'a') + ifIorE(inf, 'e'),
+    vós: inf => strip(inf) + ifA(inf, 'ai') + ifE(inf, 'ei') + ifI(inf, 'i'),
     vocês: inf => strip(inf) + ifA(inf, 'em') + ifIorE(inf, 'am'),
     nós: inf => strip(inf) + ifA(inf, 'emos') + ifIorE(inf, 'amos'),
   },
@@ -106,6 +91,7 @@ const tensesMap = {
     },
     'eu, você, ele, ela': inf => strip(inf) + ifA(inf, 'e') + ifIorE(inf, 'a'),
     tu: inf => strip(inf) + ifA(inf, 'es') + ifIorE(inf, 'as'),
+    vós: inf => strip(inf) + ifA(inf, 'eis') + ifIorE(inf, 'ais'),
     vocês: inf => strip(inf) + ifA(inf, 'em') + ifIorE(inf, 'am'),
     nós: inf => strip(inf) + ifA(inf, 'emos') + ifIorE(inf, 'amos'),
   },
@@ -116,6 +102,7 @@ const tensesMap = {
     },
     'eu, você, ele, ela': inf => stripR(inf) + 'sse',
     tu: inf => stripR(inf) + 'sses',
+    vós: inf => strip(inf) + ifA(inf, 'ásseis') + ifE(inf, 'êsseis') + ifI(inf, 'ísseis'),
     vocês: inf => stripR(inf) + 'ssem',
     nós: inf => strip(inf) + ifA(inf, 'ássemos') + ifE(inf, 'êssemos') + ifI(inf, 'íssemos'),
   },
@@ -126,6 +113,7 @@ const tensesMap = {
     },
     'eu, você, ele, ela': inf => inf,
     tu: inf => inf + 'es',
+    vós: inf => inf + 'des',
     vocês: inf => inf + 'em',
     nós: inf => inf + 'mos',
   },
@@ -135,6 +123,7 @@ const tensesMap = {
     },
     eu: inf => 'tenho ' + participio(inf),
     tu: inf => 'tens ' + participio(inf),
+    vós: inf => 'tendes ' + participio(inf),
     'você, ele, ela': inf => 'tem ' + participio(inf),
     'vocês, eles, elas': inf => 'têm ' + participio(inf),
     nós: inf => 'temos ' + participio(inf),
@@ -145,6 +134,7 @@ const tensesMap = {
     },
     'eu, você, ele, ela': inf => 'tinha ' + participio(inf),
     tu: inf => 'tinhas ' + participio(inf),
+    vós: inf => 'tínheis ' + participio(inf),
     'vocês, eles, elas': inf => 'tinham ' + participio(inf),
     nós: inf => 'tínhamos ' + participio(inf),
   },
@@ -154,6 +144,7 @@ const tensesMap = {
     },
     eu: inf => 'terei ' + participio(inf),
     tu: inf => 'terás ' + participio(inf),
+    vós: inf => 'tereis ' + participio(inf),
     'você, ele, ela': inf => 'terá ' + participio(inf),
     'vocês, eles, elas': inf => 'terão ' + participio(inf),
     nós: inf => 'teremos ' + participio(inf),
@@ -164,6 +155,7 @@ const tensesMap = {
     },
     'eu, você, ele, ela': inf => 'teria ' + participio(inf),
     tu: inf => 'terias ' + participio(inf),
+    vós: inf => 'teríeis ' + participio(inf),
     'vocês, eles, elas': inf => 'teriam ' + participio(inf),
     nós: inf => 'teríamos ' + participio(inf),
   },
@@ -173,6 +165,7 @@ const tensesMap = {
     },
     'eu, você, ele, ela': inf => 'tenha ' + participio(inf),
     tu: inf => 'tenhas ' + participio(inf),
+    vós: inf => 'tenhais ' + participio(inf),
     'vocês, eles, elas': inf => 'tenham ' + participio(inf),
     nós: inf => 'tenhamos ' + participio(inf),
   },
@@ -182,6 +175,7 @@ const tensesMap = {
     },
     'eu, você, ele, ela': inf => 'tivesse ' + participio(inf),
     tu: inf => 'tivesses ' + participio(inf),
+    vós: inf => 'tivestes ' + participio(inf),
     'vocês, eles, elas': inf => 'tivessem ' + participio(inf),
     nós: inf => 'tivéssemos ' + participio(inf),
   },
@@ -191,9 +185,30 @@ const tensesMap = {
     },
     'eu, você, ele, ela': inf => 'tiver ' + participio(inf),
     tu: inf => 'tiveres ' + participio(inf),
+    vós: inf => 'tiverdes ' + participio(inf),
     'vocês, eles, elas': inf => 'tiverem ' + participio(inf),
     nós: inf => 'tivermos ' + participio(inf),
   },
+}
+
+export const refine = (inf, conjugated) => {
+  // *igir -> ijo, ija, ijam, ijamos
+  // eg: corrigir
+  if (/igir$/.test(inf)) return conjugated.replace(/iga(s|is|m|mos)?$/, 'ija$1').replace(/igo(m|mos)?$/, 'ijo$1')
+
+  // *gar -> gue, guei
+  // eg: pagar
+  if (/gar$/.test(inf)) return conjugated.replace(/ge(s|is|i|m|mos)?$/, 'gue$1')
+
+  // *car -> que, quei
+  // eg: checar
+  if (/car$/.test(inf)) return conjugated.replace(/ce(s|is|i|m|mos)?$/, 'que$1')
+
+  // *erir -> iro, ira, iram, iramos
+  // eg: preferir
+  if (/erir$/.test(inf)) return conjugated.replace(/er(o|a)(s|is|m|mos)?$/, 'ir$1$2')
+
+  return conjugated
 }
 
 const buildTenses = (includeCompositeTenses, includeTu, includeVos) =>

@@ -22,7 +22,7 @@
     <thead>
       <tr>
         <th>pronomes</th>
-        {#each verbs as verb}
+        {#each $verbs as verb}
           <th>{verb} <button on:click={() => removeVerb(verb)}>x</button></th>
         {/each}
       </tr>
@@ -32,7 +32,7 @@
         {#each tense.groups as group, i}
           {#if i == 0}
             <tr class="group-header">
-              <td colspan={verbs.length + 1}>
+              <td colspan={$verbs.length + 1}>
                 <strong>{tense.name}</strong>
                 {#if tense.examples}
                   {#each tense.examples as example}
@@ -49,7 +49,7 @@
 
           <tr>
             <td class="group-name"><em>{group.name}</em></td>
-            {#each verbs as infinitive}
+            {#each $verbs as infinitive}
               <td>{group.func(infinitive)}</td>
             {/each}
           </tr>
@@ -61,8 +61,10 @@
 
 <script>
   import buildTenses from '../services/verb-tenses-pt.js'
+	import LocalStorageStore from '../stores/local-storage-store.js';
 
-  let verbs = ['pagar', 'ligar', 'chegar', 'preferir', 'checar', 'comer', 'gostar', 'partir', 'corrigir']
+	const verbs = LocalStorageStore('verbs', ['gostar', 'comer', 'desistir'])
+	// pagar', 'ligar', 'chegar', 'preferir', 'checar', 'comer', 'gostar', 'partir', 'corrigir'
   let newVerb = ''
   let includeTu = true
   let includeVos = false
@@ -73,10 +75,10 @@
   const addVerb = () => {
     const final = newVerb.substring(newVerb.length - 2, newVerb.length)
     if (['ar', 'er', 'ir'].indexOf(final) < 0) return
-    verbs = [...verbs, newVerb]
+    $verbs = [...$verbs, newVerb]
     newVerb = ''
   }
-  const removeVerb = verbo => (verbs = [...verbs.filter(v => v != verbo)])
+  const removeVerb = verbo => ($verbs = [...$verbs.filter(v => v != verbo)])
 </script>
 
 <style lang="scss">
