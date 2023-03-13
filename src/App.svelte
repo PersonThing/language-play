@@ -5,7 +5,6 @@
   </nav>
 
   <Router>
-    <!-- todo: better example w/ optional userId in a single route -->
     <Route path="/pt" component={ConjugatorPT} />
     <Route path="/es" component={ConjugatorES} />
   </Router>
