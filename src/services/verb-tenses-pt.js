@@ -3,7 +3,7 @@ import { strip, stripR, ifA, ifE, ifI, ifEI, participio } from './verb-tenses-ut
 const tensesMap = {
   particípio: {
     examples: {
-      'The work is done': 'O trabalho é feito',
+      'The work is done': 'O trabalho está feito',
     },
     '*': participio,
   },

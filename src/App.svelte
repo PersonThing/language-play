@@ -1,14 +1,15 @@
 <main>
   <nav>
-    <a href="/language-play/#/pt">PT</a>
-    <a href="/language-play/#/es">ES</a>
+    <a href="/pt" use:link use:active>Portugués</a>
+    <a href="/es" use:link use:active>Español</a>
   </nav>
 
   <Router basepath="/language-play" {routes} />
 </main>
 
 <script>
-  import Router from 'svelte-spa-router'
+  import Router, { link } from 'svelte-spa-router'
+  import active from 'svelte-spa-router/active'
   import ConjugatorPT from './lib/ConjugatorPT.svelte'
   import ConjugatorES from './lib/ConjugatorES.svelte'
 
@@ -27,11 +28,16 @@
 
     a {
       display: block;
-      padding: 10px 15px;
+      padding: 10px 25px;
       text-decoration: none;
+      color: #666;
+
       &:hover {
         background: #eee;
       }
     }
+  }
+  :global(nav a.active) {
+    background: #eee;
   }
 </style>

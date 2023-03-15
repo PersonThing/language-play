@@ -1,18 +1,16 @@
-import { strip, stripR, ifA, ifE, ifI, ifEI, participio } from './verb-tenses-utils.js'
-
-const placeholder = '?'
+import { strip, ifA, ifE, ifI, ifEI, participio } from './verb-tenses-utils.js'
 
 const tensesMap = {
   particípio: {
     examples: {
-      'The work is done': 'O trabalho é feito',
+      'The work is done': 'El trabajo está hecho',
     },
     '*': participio,
   },
   gerundio: {
     examples: {
-      'I am eating': 'Eu estou comiendo',
-      "He's eating": 'Ele está comiendo',
+      'I am eating': 'Yo estoy comiendo',
+      "He's eating": 'Él está comiendo',
     },
     '*': inf => strip(inf) + ifA(inf, 'ando') + ifEI(inf, 'iendo'),
   },
