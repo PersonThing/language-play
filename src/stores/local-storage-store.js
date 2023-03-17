@@ -11,7 +11,6 @@ function LocalStorageStore(key, defaultValue) {
   const valueFromStorage = localStorage.getItem(key)
   const hasJson = valueFromStorage != null && valueFromStorage != 'null' && valueFromStorage != 'undefined'
   const initialValue = hasJson ? JSON.parse(valueFromStorage) : defaultValue
-
   const { subscribe, set, update } = writable(initialValue)
   const store = {
     subscribe,

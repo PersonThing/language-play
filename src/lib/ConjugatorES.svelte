@@ -7,18 +7,17 @@
     </label>
   </div> -->
 
-  <ConjugationTable {tenses} verbs={$verbs} />
+  <ConjugationTable {tenses} {verbStore} {getVerbConjugationArgs} />
 </div>
 
 <script>
-  import buildTenses from '../services/verb-tenses-es.js'
+  import { buildTenses, getVerbConjugationArgs } from '../services/verb-tenses-es.js'
   import LocalStorageStore from '../stores/local-storage-store.js'
   import ConjugationTable from './ConjugationTable.svelte'
 
-  const verbs = LocalStorageStore('verbs-es2', ['hablar', 'comer', 'vivir'])
+  const verbStore = LocalStorageStore('verbs-es', ['hablar', 'comer', 'vivir'])
 
   let includeCompositeTenses = true
 
   $: tenses = buildTenses(includeCompositeTenses)
 </script>
-

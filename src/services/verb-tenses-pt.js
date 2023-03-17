@@ -1,200 +1,238 @@
-import { strip, stripR, ifA, ifE, ifI, ifEI, participio } from './verb-tenses-utils.js'
+import { participio, strip } from './verb-tenses-utils.js'
 
 const tensesMap = {
   particípio: {
     examples: {
       'The work is done': 'O trabalho está feito',
     },
-    '*': participio,
+    groups: {
+      '*': ({ participio }) => participio,
+    },
   },
   gerundio: {
     examples: {
       'I am eating': 'Eu estou comendo',
       "He's thinking": 'Ele está pensando',
     },
-    '*': inf => stripR(inf) + 'ndo',
+    groups: {
+      '*': ({ root, a, e }) => root + (a ? 'ando' : e ? 'endo' : 'indo'),
+    },
   },
   presente: {
     examples: {
       'I eat': 'Eu como',
       'You eat': 'Você come',
     },
-    eu: inf => strip(inf) + 'o',
-    tu: inf => strip(inf) + ifA(inf, 'as') + ifEI(inf, 'es'),
-    vós: inf => strip(inf) + ifA(inf, 'ais') + ifI(inf, 'is') + ifE(inf, 'eis'),
-    'você, ele, ela': inf => strip(inf) + ifA(inf, 'a') + ifEI(inf, 'e'),
-    'vocês, eles, elas': inf => strip(inf) + ifA(inf, 'am') + ifEI(inf, 'em'),
-    nós: inf => strip(inf) + ifA(inf, 'amos') + ifE(inf, 'emos') + ifI(inf, 'imos'),
+    groups: {
+      eu: ({ root }) => root + 'o',
+      tu: ({ root, a }) => root + (a ? 'as' : 'es'),
+      vós: ({ root, a, e }) => root + (a ? 'ais' : e ? 'eis' : 'is'),
+      'você, ele, ela': ({ root, a }) => root + (a ? 'a' : 'e'),
+      'vocês, eles, elas': ({ root, a }) => root + (a ? 'am' : 'em'),
+      nós: ({ root, a, e }) => root + (a ? 'amos' : e ? 'emos' : 'imos'),
+    },
   },
   'pretérito imperfeito': {
     examples: {
       'I ate a lot when I was little': 'Eu comia muito quando era criança',
     },
-    'eu, você, ele, ela': inf => strip(inf) + ifA(inf, 'ava') + ifEI(inf, 'ia'),
-    tu: inf => strip(inf) + ifA(inf, 'ava') + ifEI(inf, 'ias'),
-    vós: inf => strip(inf) + ifA(inf, 'áveis') + ifEI(inf, 'íeis'),
-    'vocês, eles, elas': inf => strip(inf) + ifA(inf, 'ava') + ifEI(inf, 'ia'),
-    nós: inf => strip(inf) + ifA(inf, 'ávamos') + ifEI(inf, 'íamos'),
+    groups: {
+      'eu, você, ele, ela': ({ root, a }) => root + (a ? 'ava' : 'ia'),
+      tu: ({ root, a }) => root + (a ? 'ava' : 'ias'),
+      vós: ({ root, a }) => root + (a ? 'áveis' : 'íeis'),
+      'vocês, eles, elas': ({ root, a }) => root + (a ? 'ava' : 'ia'),
+      nós: ({ root, a }) => root + (a ? 'ávamos' : 'íamos'),
+    },
   },
   'pretérito perfeito': {
     examples: {
       'I already ate that': 'Eu já comi isso',
     },
-    eu: inf => strip(inf) + ifA(inf, 'ei') + ifEI(inf, 'i'),
-    tu: inf => strip(inf) + ifA(inf, 'aste') + ifE(inf, 'este') + ifI(inf, 'iste'),
-    vós: inf => strip(inf) + ifA(inf, 'astes') + ifE(inf, 'estes') + ifI(inf, 'istes'),
-    'você, ele, ela': inf => strip(inf) + ifA(inf, 'ou') + ifE(inf, 'eu') + ifI(inf, 'iu'),
-    'vocês, eles, elas': inf => strip(inf) + ifA(inf, 'aram') + ifE(inf, 'eram') + ifI(inf, 'iram'),
-    nós: inf => strip(inf) + ifA(inf, 'amos') + ifE(inf, 'emos') + ifI(inf, 'imos'),
+    groups: {
+      eu: ({ root, a }) => root + (a ? 'ei' : 'i'),
+      tu: ({ root, a, e }) => root + (a ? 'aste' : e ? 'este' : 'iste'),
+      vós: ({ root, a, e }) => root + (a ? 'astes' : e ? 'estes' : 'istes'),
+      'você, ele, ela': ({ root, a, e }) => root + (a ? 'ou' : e ? 'eu' : 'iu'),
+      'vocês, eles, elas': ({ root, a, e }) => root + (a ? 'aram' : e ? 'eram' : 'iram'),
+      nós: ({ root, a, e }) => root + (a ? 'amos' : e ? 'emos' : 'imos'),
+    },
   },
   'pretérito mais-que-perfeito': {
     examples: {
       'When I noticed, the water had already overflowed from the bathtub': 'Quando notei, a água já transbordara da banheira',
     },
-    'eu, você, ele, ela': inf => inf + 'a',
-    tu: inf => inf + 'as',
-    vós: inf => inf + 'ais',
-    'vocês, eles, elas': inf => inf + 'am',
-    nós: inf => inf + 'amos',
+    groups: {
+      'eu, você, ele, ela': ({ inf }) => inf + 'a',
+      tu: ({ inf }) => inf + 'as',
+      vós: ({ inf }) => inf + 'ais',
+      'vocês, eles, elas': ({ inf }) => inf + 'am',
+      nós: ({ inf }) => inf + 'amos',
+    },
   },
   'futuro do pretérito': {
     examples: {
       'I would eat that': 'Eu comeria isso',
     },
-    'eu, você, ele, ela': inf => inf + ifA(inf, 'ia') + ifE(inf, 'ia') + ifI(inf, 'ia'),
-    tu: inf => inf + ifA(inf, 'ias') + ifE(inf, 'ias') + ifI(inf, 'ias'),
-    vós: inf => inf + ifA(inf, 'íeis') + ifE(inf, 'íeis') + ifI(inf, 'íeis'),
-    'vocês, eles, elas': inf => inf + ifA(inf, 'iam') + ifE(inf, 'iam') + ifI(inf, 'iam'),
-    nós: inf => inf + ifA(inf, 'íamos') + ifE(inf, 'íamos') + ifI(inf, 'íamos'),
+    groups: {
+      'eu, você, ele, ela': ({ inf, a, e }) => inf + (a ? 'ia' : e ? 'ia' : 'ia'),
+      tu: ({ inf, a, e }) => inf + (a ? 'ias' : e ? 'ias' : 'ias'),
+      vós: ({ inf, a, e }) => inf + (a ? 'íeis' : e ? 'íeis' : 'íeis'),
+      'vocês, eles, elas': ({ inf, a, e }) => inf + (a ? 'iam' : e ? 'iam' : 'iam'),
+      nós: ({ inf, a, e }) => inf + (a ? 'íamos' : e ? 'íamos' : 'íamos'),
+    },
   },
   'futuro do presente': {
     examples: {
       'I will eat that': 'Eu comerei isso',
     },
-    eu: inf => inf + 'ei',
-    tu: inf => inf + 'ás',
-    vós: inf => inf + 'eis',
-    'você, ele, ela': inf => inf + 'á',
-    'vocês, eles, elas': inf => inf + 'ão',
-    nós: inf => inf + 'emos',
+    groups: {
+      eu: ({ inf }) => inf + 'ei',
+      tu: ({ inf }) => inf + 'ás',
+      vós: ({ inf }) => inf + 'eis',
+      'você, ele, ela': ({ inf }) => inf + 'á',
+      'vocês, eles, elas': ({ inf }) => inf + 'ão',
+      nós: ({ inf }) => inf + 'emos',
+    },
   },
   imperativo: {
     examples: {
       'Eat it': 'Coma isso',
     },
-    você: inf => strip(inf) + ifA(inf, 'e') + ifEI(inf, 'a'),
-    tu: inf => strip(inf) + ifA(inf, 'a') + ifEI(inf, 'e'),
-    vós: inf => strip(inf) + ifA(inf, 'ai') + ifE(inf, 'ei') + ifI(inf, 'i'),
-    vocês: inf => strip(inf) + ifA(inf, 'em') + ifEI(inf, 'am'),
-    nós: inf => strip(inf) + ifA(inf, 'emos') + ifEI(inf, 'amos'),
+    groups: {
+      você: ({ root, a }) => root + (a ? 'e' : 'a'),
+      tu: ({ root, a }) => root + (a ? 'a' : 'e'),
+      vós: ({ root, a, e }) => root + (a ? 'ai' : e ? 'ei' : 'i'),
+      vocês: ({ root, a }) => root + (a ? 'em' : 'am'),
+      nós: ({ root, a }) => root + (a ? 'emos' : 'amos'),
+    },
   },
   'subjuntivo presente': {
     examples: {
       'I want you to eat that': 'Eu quero que você coma isso',
       "Even though I like it, I can't eat it": 'Mesmo que eu goste dele, não posso comê-lo',
     },
-    'eu, você, ele, ela': inf => strip(inf) + ifA(inf, 'e') + ifEI(inf, 'a'),
-    tu: inf => strip(inf) + ifA(inf, 'es') + ifEI(inf, 'as'),
-    vós: inf => strip(inf) + ifA(inf, 'eis') + ifEI(inf, 'ais'),
-    vocês: inf => strip(inf) + ifA(inf, 'em') + ifEI(inf, 'am'),
-    nós: inf => strip(inf) + ifA(inf, 'emos') + ifEI(inf, 'amos'),
+    groups: {
+      'eu, você, ele, ela': ({ root, a }) => root + (a ? 'e' : 'a'),
+      tu: ({ root, a }) => root + (a ? 'es' : 'as'),
+      vós: ({ root, a }) => root + (a ? 'eis' : 'ais'),
+      vocês: ({ root, a }) => root + (a ? 'em' : 'am'),
+      nós: ({ root, a }) => root + (a ? 'emos' : 'amos'),
+    },
   },
   'subjuntivo pretérito imperfeito': {
     examples: {
       'If you ate it, you would understand': 'Se você o comesse, entenderia',
       'If I had money, I would buy a car': 'Se eu tivesse dinheiro, eu compraria um carro',
     },
-    'eu, você, ele, ela': inf => stripR(inf) + 'sse',
-    tu: inf => stripR(inf) + 'sses',
-    vós: inf => strip(inf) + ifA(inf, 'ásseis') + ifE(inf, 'êsseis') + ifI(inf, 'ísseis'),
-    vocês: inf => stripR(inf) + 'ssem',
-    nós: inf => strip(inf) + ifA(inf, 'ássemos') + ifE(inf, 'êssemos') + ifI(inf, 'íssemos'),
+    groups: {
+      'eu, você, ele, ela': ({ root, a, e }) => root + (a ? 'asse' : e ? 'esse' : 'isse'),
+      tu: ({ root, a, e }) => root + (a ? 'asses' : e ? 'esses' : 'isses'),
+      vós: ({ root, a, e }) => root + (a ? 'ásseis' : e ? 'êsseis' : 'ísseis'),
+      vocês: ({ root, a, e }) => root + (a ? 'assem' : e ? 'essem' : 'issem'),
+      nós: ({ root, a, e }) => root + (a ? 'ássemos' : e ? 'êssemos' : 'íssemos'),
+    },
   },
   'subjuntivo futuro': {
     examples: {
-      'Tell me when you get there': 'Me conta quando você chegar'
+      'Tell me when you get there': 'Me conta quando você chegar',
     },
-    'eu, você, ele, ela': inf => inf,
-    tu: inf => inf + 'es',
-    vós: inf => inf + 'des',
-    vocês: inf => inf + 'em',
-    nós: inf => inf + 'mos',
+    groups: {
+      'eu, você, ele, ela': ({ inf }) => inf,
+      tu: ({ inf }) => inf + 'es',
+      vós: ({ inf }) => inf + 'des',
+      vocês: ({ inf }) => inf + 'em',
+      nós: ({ inf }) => inf + 'mos',
+    },
   },
   'pretérito perfeito composto do indicativo': {
     examples: {
       'I have been eating a lot lately': 'Eu tenho comido muito ultimamente',
     },
-    eu: inf => 'tenho ' + participio(inf),
-    tu: inf => 'tens ' + participio(inf),
-    vós: inf => 'tendes ' + participio(inf),
-    'você, ele, ela': inf => 'tem ' + participio(inf),
-    'vocês, eles, elas': inf => 'têm ' + participio(inf),
-    nós: inf => 'temos ' + participio(inf),
+    groups: {
+      eu: ({ participio }) => 'tenho ' + participio,
+      tu: ({ participio }) => 'tens ' + participio,
+      vós: ({ participio }) => 'tendes ' + participio,
+      'você, ele, ela': ({ participio }) => 'tem ' + participio,
+      'vocês, eles, elas': ({ participio }) => 'têm ' + participio,
+      nós: ({ participio }) => 'temos ' + participio,
+    },
   },
   'pretérito mais-que-perfeito composto do indicativo': {
     examples: {
       'I had been eating a lot, but I stopped': 'Eu tinha comido muito, mas parei',
     },
-    'eu, você, ele, ela': inf => 'tinha ' + participio(inf),
-    tu: inf => 'tinhas ' + participio(inf),
-    vós: inf => 'tínheis ' + participio(inf),
-    'vocês, eles, elas': inf => 'tinham ' + participio(inf),
-    nós: inf => 'tínhamos ' + participio(inf),
+    groups: {
+      'eu, você, ele, ela': ({ participio }) => 'tinha ' + participio,
+      tu: ({ participio }) => 'tinhas ' + participio,
+      vós: ({ participio }) => 'tínheis ' + participio,
+      'vocês, eles, elas': ({ participio }) => 'tinham ' + participio,
+      nós: ({ participio }) => 'tínhamos ' + participio,
+    },
   },
   'futuro do presente composto do indicativo': {
     examples: {
       'Tomorrow, I will have eaten three more sandwiches': 'Amanhã, eu terei comido mais três sanduíches',
     },
-    eu: inf => 'terei ' + participio(inf),
-    tu: inf => 'terás ' + participio(inf),
-    vós: inf => 'tereis ' + participio(inf),
-    'você, ele, ela': inf => 'terá ' + participio(inf),
-    'vocês, eles, elas': inf => 'terão ' + participio(inf),
-    nós: inf => 'teremos ' + participio(inf),
+    groups: {
+      eu: ({ participio }) => 'terei ' + participio,
+      tu: ({ participio }) => 'terás ' + participio,
+      vós: ({ participio }) => 'tereis ' + participio,
+      'você, ele, ela': ({ participio }) => 'terá ' + participio,
+      'vocês, eles, elas': ({ participio }) => 'terão ' + participio,
+      nós: ({ participio }) => 'teremos ' + participio,
+    },
   },
   'futuro do pretérito composto do indicativo': {
     examples: {
       'I would have eaten the pizza': 'Eu teria comido a pizza',
     },
-    'eu, você, ele, ela': inf => 'teria ' + participio(inf),
-    tu: inf => 'terias ' + participio(inf),
-    vós: inf => 'teríeis ' + participio(inf),
-    'vocês, eles, elas': inf => 'teriam ' + participio(inf),
-    nós: inf => 'teríamos ' + participio(inf),
+    groups: {
+      'eu, você, ele, ela': ({ participio }) => 'teria ' + participio,
+      tu: ({ participio }) => 'terias ' + participio,
+      vós: ({ participio }) => 'teríeis ' + participio,
+      'vocês, eles, elas': ({ participio }) => 'teriam ' + participio,
+      nós: ({ participio }) => 'teríamos ' + participio,
+    },
   },
   'pretérito perfeito composto do subjuntivo': {
     examples: {
       'I hope you had already called the hospital': 'Eu espero que você já tenha ligado para o hospital',
     },
-    'eu, você, ele, ela': inf => 'tenha ' + participio(inf),
-    tu: inf => 'tenhas ' + participio(inf),
-    vós: inf => 'tenhais ' + participio(inf),
-    'vocês, eles, elas': inf => 'tenham ' + participio(inf),
-    nós: inf => 'tenhamos ' + participio(inf),
+    groups: {
+      'eu, você, ele, ela': ({ participio }) => 'tenha ' + participio,
+      tu: ({ participio }) => 'tenhas ' + participio,
+      vós: ({ participio }) => 'tenhais ' + participio,
+      'vocês, eles, elas': ({ participio }) => 'tenham ' + participio,
+      nós: ({ participio }) => 'tenhamos ' + participio,
+    },
   },
   'pretérito mais-que-perfeito composto do subjuntivo': {
     examples: {
       "If you had looked at the map, we wouldn't be in this mess": 'Se você tivesse olhado o mapa, não estaríamos nessa confusão',
     },
-    'eu, você, ele, ela': inf => 'tivesse ' + participio(inf),
-    tu: inf => 'tivesses ' + participio(inf),
-    vós: inf => 'tivestes ' + participio(inf),
-    'vocês, eles, elas': inf => 'tivessem ' + participio(inf),
-    nós: inf => 'tivéssemos ' + participio(inf),
+    groups: {
+      'eu, você, ele, ela': ({ participio }) => 'tivesse ' + participio,
+      tu: ({ participio }) => 'tivesses ' + participio,
+      vós: ({ participio }) => 'tivestes ' + participio,
+      'vocês, eles, elas': ({ participio }) => 'tivessem ' + participio,
+      nós: ({ participio }) => 'tivéssemos ' + participio,
+    },
   },
   'futuro composto do subjuntivo': {
     examples: {
       "I'll tell you when I've finished the work": 'Eu te aviso quando tiver terminado o trabalho',
     },
-    'eu, você, ele, ela': inf => 'tiver ' + participio(inf),
-    tu: inf => 'tiveres ' + participio(inf),
-    vós: inf => 'tiverdes ' + participio(inf),
-    'vocês, eles, elas': inf => 'tiverem ' + participio(inf),
-    nós: inf => 'tivermos ' + participio(inf),
+    groups: {
+      'eu, você, ele, ela': ({ participio }) => 'tiver ' + participio,
+      tu: ({ participio }) => 'tiveres ' + participio,
+      vós: ({ participio }) => 'tiverdes ' + participio,
+      'vocês, eles, elas': ({ participio }) => 'tiverem ' + participio,
+      nós: ({ participio }) => 'tivermos ' + participio,
+    },
   },
 }
 
-export const refine = (inf, conjugated) => {
+export const refine = ({ inf, root, a, e, participio }, conjugated) => {
   // *igir -> ijo, ija, ijam, ijamos
   // eg: corrigir
   if (/igir$/.test(inf)) return conjugated.replace(/iga(s|is|m|mos)?$/, 'ija$1').replace(/igo(m|mos)?$/, 'ijo$1')
@@ -214,7 +252,17 @@ export const refine = (inf, conjugated) => {
   return conjugated
 }
 
-const buildTenses = (includeCompositeTenses, includeTu, includeVos) =>
+export const getVerbConjugationArgs = inf => {
+  return {
+    inf,
+    root: strip(inf),
+    a: inf.endsWith('ar'),
+    e: inf.endsWith('er'),
+    participio: participio(inf),
+  }
+}
+
+export const buildTenses = (includeCompositeTenses, includeTu, includeVos) =>
   Object.keys(tensesMap)
     .filter(k => includeCompositeTenses || !k.includes('composto'))
     .map(k => {
@@ -223,17 +271,17 @@ const buildTenses = (includeCompositeTenses, includeTu, includeVos) =>
         name: k,
         examples: tense.examples
           ? Object.keys(tense.examples).map(k => ({
-              english: k,
-              portuguese: tense.examples[k],
+              left: k,
+              right: tense.examples[k],
             }))
           : null,
-        groups: Object.keys(tense)
-          .filter(gk => gk != 'examples' && (includeTu || gk != 'tu') && (includeVos || gk != 'vós'))
+        groups: Object.keys(tense.groups)
+          .filter(gk => (includeTu || gk != 'tu') && (includeVos || gk != 'vós'))
           .map(gk => ({
             name: gk,
-            func: w => refine(w, tense[gk](w)),
+            conjugate: args => {
+              return refine(args, tense.groups[gk](args))
+            },
           })),
       }
     })
-
-export default buildTenses

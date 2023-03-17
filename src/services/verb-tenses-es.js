@@ -1,209 +1,365 @@
-import { strip, ifA, ifE, ifI, ifEI, participio } from './verb-tenses-utils.js'
+/*
+  pronouns:
+    yo        eu, me
+    tú        tu, you         informal / closer / more familiar
+    vos       tu, you         informal - but only certain areas use it
+    usted     você, you         formal / older people / people you don't know / higher position
+
+    ustedes   vocês, you (pl)   only in Latin America
+    vosotros  vocês, you (pl)   only in Spain
+
+    él        ele, he
+    ella      ela, she
+    ellos     eles, them (m)
+    ellas     elas, them (f)
+
+llegar
+  colombia - jyegar
+  argentina/uruguay - chegar
+  peru - yegar
+    nosotros
+*/
+
+/*
+  verb tenses
+    simple
+      participio
+        comido
+          I have eaten
+          yo he comido
+          tu has comido
+
+      gerundio
+        comiendo
+          I am eating
+          yo estoy comiendo
+          tu estás comiendo
+          
+
+      presente
+        como / comes / come
+          Yo como
+          Tu comes
+
+      imperfecto
+        comía / comías / comía
+          yo comía
+          tu comías
+
+      pretérito (perfecto)
+        comí / comiste / comió
+          yo comí
+          tu comiste
+          tu dormiste
+          usted comió
+
+      futuro
+        comeré / comerás / comerá
+          yo comeré
+          tu comerás
+
+      condicional
+        comería / comerías / comería
+          me gustaría 
+
+          yo te gusto   you like me   I am something that you like
+          tu me gustas  I like you    you are something that I like
+              tu eres algo que me gusta
+
+          te gustaría comer pan?
+          you can't just say "te gustaría pan?" it sounds weird
+          gustaría needs a verb after
+          tiene sentido - 
+          tienes razón - 
+
+    composite
+      pretérito perfecto
+        he comido
+          I have eaten - yo he comido
+          you have eaten - tu has comido
+
+      pluscuamperfecto
+        había comido
+          I had eaten - yo había comido
+          you had eaten - tu habías comido
+
+      futuro perfecto
+        habré comido
+          I will have eaten in 2 hours - yo habré comido en dos horas
+      condicional perfecto
+        habría comido
+          I would have eaten  if I had money
+          yo habría comido    si yo tuviera dinero
+          eu teria comido     se eu tivesse dinheiro
+
+    subjuntivo
+      presente
+        coma / comas / coma
+          I want you to eat
+          yo quiero que comas - always sounds like quê
+          eu quero que comas
+
+          I hope you are well
+          yo espero que estés bien
+          eu espero que estejas bem
+
+      imperfecto
+        comiera / comieras / comiera - more common
+        o
+        comiese / comieses / comiese - people use it, but depends on place
+
+        se eu fosse rico   compraria um carro
+        si yo fuera rico   compraria un carro
+
+    subjunctive composite
+      pretérito perfecto
+        haya comido
+
+        I hope you have eaten
+        yo espero que hayas comido
+        yo espero que usted haya comido
+
+      pluscuamperfecto
+        hubiera comido - more common
+        o
+        hubiese comido
+
+        si yo hubiera sabido antes, yo no habria|hubiera ido
+
+    imperative
+      afirmativo
+        come / comas / coma
+
+        comete la comida (tu)
+        come la comida (tu)
+        coma la comida (usted)
+        comase la comida (usted)
+
+      negativo
+        no comas / no coma
+
+        don't eat that!
+        no comas eso! tu
+        no come eso! - no puedo decir eso
+        no coma eso! usted
+*/
+
+import { participio, strip } from './verb-tenses-utils.js'
 
 const tensesMap = {
   particípio: {
     examples: {
       'The work is done': 'El trabajo está hecho',
     },
-    '*': participio,
+    groups: {
+      '*': ({ participio }) => participio,
+    },
   },
+
   gerundio: {
     examples: {
       'I am eating': 'Yo estoy comiendo',
       "He's eating": 'Él está comiendo',
     },
-    '*': inf => strip(inf) + ifA(inf, 'ando') + ifEI(inf, 'iendo'),
+    groups: {
+      '*': ({ root, a }) => (root + a ? 'ando' : 'iendo'),
+    },
   },
-  'presente': {
+
+  presente: {
     examples: {
       'I eat': 'Yo como',
       'You eat': 'Tu comes',
     },
-    yo: inf => strip(inf) + 'o',
-    tú: inf => strip(inf) + ifA(inf, 'as') + ifEI(inf, 'es'),
-    'él, Ud.': inf => strip(inf) + ifA(inf, 'a') + ifEI(inf, 'e'),
-    nosotros: inf => strip(inf) + ifA(inf, 'amos') + ifE(inf, 'emos') + ifI(inf, 'imos'),
-    vosotros: inf => strip(inf) + ifA(inf, 'áis') + ifE(inf, 'éis') + ifI(inf, 'ís'),
-    'ellos, Uds.': inf => strip(inf) + ifA(inf, 'an') + ifEI(inf, 'en'),
+    groups: {
+      yo: ({ root }) => root + 'o',
+      tú: ({ root, a }) => root + (a ? 'as' : 'es'),
+      'él, ella, usted': ({ root, a }) => root + (a ? 'a' : 'e'),
+      nosotros: ({ root, a, e }) => root + (a ? 'amos' : e ? 'emos' : 'imos'),
+      'ellos, ellas, ustedes': ({ root, a }) => root + (a ? 'an' : 'en'),
+    },
   },
-  'imperfecto': {
+
+  imperfecto: {
     examples: {
       'I ate a lot when I was little': 'Yo comía mucho cuando era pequeño',
     },
-    'yo, él, Ud.': inf => strip(inf) + ifA(inf, 'aba') + ifEI(inf, 'ía'),
-    tú: inf => strip(inf) + ifA(inf, 'abas') + ifEI(inf, 'ías'),
-    nosotros: inf => strip(inf) + ifA(inf, 'ábamos') + ifEI(inf, 'íamos'),
-    vosotros: inf => strip(inf) + ifA(inf, 'abais') + ifEI(inf, 'íais'),
-    'ellos, Uds.': inf => strip(inf) + ifA(inf, 'aban') + ifEI(inf, 'ían'),
-  },
-  'pretérito perfecto simple': {
-    examples: {
-      'I already ate that': 'Me comi eso'
+    groups: {
+      'yo, él, ella, usted': ({ root, a }) => root + (a ? 'aba' : 'ía'),
+      tú: ({ root, a }) => root + (a ? 'abas' : 'ías'),
+      nosotros: ({ root, a }) => root + (a ? 'ábamos' : 'íamos'),
+      'ellos, ellas, ustedes': ({ root, a }) => root + (a ? 'aban' : 'ían'),
     },
-    yo: inf => strip(inf) + ifA(inf, 'é') + ifEI(inf, 'í'),
-    tú: inf => strip(inf) + ifA(inf, 'aste') + ifEI(inf, 'iste'),
-    'él, Ud.': inf => strip(inf) + ifA(inf, 'ó') + ifEI(inf, 'ió'),
-    nosotros: inf => strip(inf) + ifA(inf, 'amos') + ifE(inf, 'imos'),
-    vosotros: inf => strip(inf) + ifA(inf, 'asteis') + ifE(inf, 'isteis'),
-    'ellos, Uds.': inf => strip(inf) + ifA(inf, 'aron') + ifEI(inf, 'ieron'),
   },
+
+  'pretérito (perfecto)': {
+    groups: {
+      yo: ({ root, a }) => root + (a ? 'é' : 'í'),
+      'él, ella, usted': ({ root, a }) => root + (a ? 'ó' : 'ió'),
+      tú: ({ root, a }) => root + (a ? 'aste' : 'iste'),
+      nosotros: ({ root, a, e }) => root + (a ? 'amos' : e ? 'imos' : 'imos'),
+      'ellos, ellas, ustedes': ({ root, a }) => root + (a ? 'aron' : 'ieron'),
+    },
+  },
+
   futuro: {
-    examples: {
-      'I will eat that': 'Yo comeré eso',
+    groups: {
+      yo: ({ inf, a }) => inf + 'é',
+      'él, ella, usted': ({ inf, a }) => inf + 'á',
+      tú: ({ inf, a }) => inf + 'ás',
+      nosotros: ({ inf, a, e }) => inf + 'emos',
+      'ellos, ellas, ustedes': ({ inf, a }) => inf + 'án',
     },
-    yo: inf => inf + 'é',
-    tú: inf => inf + 'ás',
-    'él, Ud.': inf => inf + 'á',
-    nosotros: inf => inf + 'emos',
-    vosotros: inf => inf + 'éis',
-    'ellos, Uds.': inf => inf + 'án',
   },
-  'condicional': {
-    examples: {
-      'I would eat that': 'Me comería eso',
+
+  condicional: {
+    groups: {
+      'yo, él, ella, usted': ({ inf, a }) => inf + 'ía',
+      tú: ({ inf, a }) => inf + 'ías',
+      nosotros: ({ inf, a, e }) => inf + 'íamos',
+      'ellos, ellas, ustedes': ({ inf, a }) => inf + 'ían',
     },
-    'yo, él, Ud.': inf => inf + 'ía',
-    tú: inf => inf + 'ías',
-    nosotros: inf => inf + 'íamos',
-    vosotros: inf => inf + 'íais',
-    'ellos, Uds.': inf => inf + 'ían',
   },
-  'imperativo afirmativo': {
-    examples: {
-      'Eat it': '?????',
+
+  'pretérito perfecto compuesto': {
+    groups: {
+      yo: ({ participio }) => 'he ' + participio, // hay
+      'él, ella, usted': ({ participio }) => 'ha ' + participio,
+      tú: ({ participio }) => 'has ' + participio,
+      nosotros: ({ e, participio }) => 'hemos ' + participio,
+      'ellos, ellas, ustedes': ({ participio }) => 'han ' + participio,
+
+      // elejalde
+      // g -> h sometimes, for example in girasol - sunflower the g makes an h sound
+      // hombre hermano hijo
+      // ellos se han hablado - they have spoken to each other
     },
-    tú: inf => strip(inf) + ifA(inf, 'a') + ifEI(inf, 'e'),
-    'Ud.': inf => strip(inf) + ifA(inf, 'e') + ifEI(inf, 'a'),
-    nosotros: inf => strip(inf) + ifA(inf, 'emos') + ifEI(inf, 'amos'),
-    // vosotros: inf => strip(inf) + ifA(inf, 'a') + ifE(inf, 'e') + ifI(inf, 'e'),
-    'Uds.': inf => strip(inf) + ifA(inf, 'en') + ifEI(inf, 'an'),
   },
-  'imperativo negativo': {
-    examples: {
-      "Don't eat it": 'No te lo comas',
+
+  pluscuamperfecto: {
+    groups: {
+      'yo, él, ella, usted': ({ participio }) => 'había ' + participio,
+      tú: ({ participio }) => 'habías ' + participio,
+      nosotros: ({ participio }) => 'habíamos ' + participio,
+      'ellos, ellas, ustedes': ({ participio }) => 'habían ' + participio,
     },
-    tú: inf => 'no ' + strip(inf) + ifA(inf, 'es') + ifEI(inf, 'as'),
-    'Ud.': inf => 'no ' + strip(inf) + ifA(inf, 'e') + ifEI(inf, 'a'),
-    nosotros: inf => 'no ' + strip(inf) + ifA(inf, 'emos') + ifEI(inf, 'amos'),
-    // vosotros: inf => 'no ' + strip(inf) + ifA(inf, 'a') + ifE(inf, 'e') + ifI(inf, 'e'),
-    'Uds.': inf => 'no ' + strip(inf) + ifA(inf, 'en') + ifEI(inf, 'an'),
   },
-  'presente de subjuntivo': {
-    examples: {
-      'I want you to eat that': 'Quiero que comas eso',
+
+  'futuro perfecto': {
+    groups: {
+      yo: ({ participio }) => 'habré ' + participio,
+      'él, ella, usted': ({ participio }) => 'habrá ' + participio,
+      tú: ({ participio }) => 'habrás ' + participio,
+      nosotros: ({ participio }) => 'habremos ' + participio,
+      'ellos, ellas, ustedes': ({ participio }) => 'habrán ' + participio,
     },
-    'yo, él, Ud.': inf => strip(inf) + ifA(inf, 'e') + ifEI(inf, 'a'),
-    tú: inf => strip(inf) + ifA(inf, 'es') + ifEI(inf, 'as'),
-    nosotros: inf => strip(inf) + ifA(inf, 'emos') + ifEI(inf, 'amos'),
-    vosotros: inf => strip(inf) + ifA(inf, 'éis') + ifEI(inf, 'áis'),
-    'Uds.': inf => strip(inf) + ifA(inf, 'en') + ifEI(inf, 'an'),
   },
-  'imperfecto de subjuntivo (option 1)': {
-    examples: {
-      'If you had read the book, you would understand': 'Si hubieras leído el libro, lo entenderías',
-      'If I had money, I would buy a car': 'Si tuviera dinero, compraría un auto',
+
+  'condicional perfecto': {
+    groups: {
+      'yo, él, ella, usted': ({ participio }) => 'habría ' + participio,
+      tú: ({ participio }) => 'habrías ' + participio,
+      nosotros: ({ participio }) => 'habríamos ' + participio,
+      'ellos, ellas, ustedes': ({ participio }) => 'habrían ' + participio,
     },
-    'yo, él, Ud.': inf => strip(inf) + ifA(inf, 'ara') + ifEI(inf, 'iera'),
-    tú: inf => strip(inf) + ifA(inf, 'aras') + ifEI(inf, 'ieras'),
-    nosotros: inf => strip(inf) + ifA(inf, 'áramos') + ifEI(inf, 'iéramos'),
-    vosotros: inf => strip(inf) + ifA(inf, 'arais') + ifEI(inf, 'ieráis'),
-    'Uds.': inf => strip(inf) + ifA(inf, 'aran') + ifEI(inf, 'ieran'),
   },
-  'imperfecto de subjuntivo (option 2)': {
-    examples: {
-      'If you had read the book, you would understand': 'Si hubieses leído el libro, lo entenderías',
-      'If I had money, I would buy a car': 'Si tuviese dinero, compraría un auto',
+
+  /*
+    I don't think it will take much time
+    I don't believe it will take much time
+
+    eu não acho que vai levar muito tempo
+    yo no creo que vaya a tomar mucho tiempo
+
+    yo voy a trabajar
+    yo voy a ir a trabajar
+    yo voy al trabajo
+
+    yo necesito desafiarme
+    yo quiero desafiarte
+    
+    yo quiero desafiarlo - him
+              desafiarla - her
+              desafiarlos - them m or you plural
+              desafiarlas - them f
+              desafiarnos - us
+  */
+  /*
+
+    subjuntivo
+      imperfecto
+        comiera / comieras / comiera - more common
+        o
+        comiese / comieses / comiese - people use it, but depends on place
+
+        se eu fosse rico   compraria um carro
+        si yo fuera rico   compraria un carro
+  */
+  'subjuntivo: presente': {
+    groups: {
+      'yo, él, ella, usted': ({ root, a, e }) => root + (a ? 'e' : 'a'),
+      tú: ({ root, a, e }) => root + (a ? 'es' : 'as'),
+      nosotros: ({ root, a, e }) => root + (a ? 'emos' : 'amos'),
+      'ellos, ellas, ustedes': ({ root, a, e }) => root + (a ? 'en' : 'an'),
     },
-    'yo, él, Ud.': inf => strip(inf) + ifA(inf, 'ase') + ifEI(inf, 'iese'),
-    tú: inf => strip(inf) + ifA(inf, 'ases') + ifEI(inf, 'ieses'),
-    nosotros: inf => strip(inf) + ifA(inf, 'ásemos') + ifEI(inf, 'iésemos'),
-    vosotros: inf => strip(inf) + ifA(inf, 'aséis') + ifEI(inf, 'ieséis'),
-    'Uds.': inf => strip(inf) + ifA(inf, 'asen') + ifEI(inf, 'iesen'),
   },
-  // 'futuro de subjuntivo': {
-  //   examples: {
-  //     'If you had read the book, you would understand': '?????',
-  //     'If I had money, I would buy a car': '?????',
-  //   },
-  //   'yo, él, Ud.': inf => placeholder, //inf,
-  //   tú: inf => placeholder, //inf + 'es',
-  //   nosotros: inf => placeholder, //inf + 'mos',
-  //   vosotros: inf => placeholder, //inf + 'des',
-  //   'Uds.': inf => placeholder, //inf + 'em',
-  // },
-  // 'pretérito perfeito composto do indicativo': {
-  //   examples: {
-  //     'I have been reading a lot lately': '?????',
-  //   },
-  //   yo: inf => placeholder, //'tenho ' + participio(inf),
-  //   tú: inf => placeholder, //'tens ' + participio(inf),
-  //   'él, Ud.': inf => placeholder, //'tem ' + participio(inf),
-  //   nosotros: inf => placeholder, //'temos ' + participio(inf),
-  //   vosotros: inf => placeholder, //'tendes ' + participio(inf),
-  //   'ellos, Uds.': inf => placeholder, //'têm ' + participio(inf),
-  // },
-  // 'pretérito mais-que-perfeito composto do indicativo': {
-  //   examples: {
-  //     'I had been reading a lot, but I stopped': '?????',
-  //   },
-  //   'yo, él, Ud.': inf => placeholder, //'tinha ' + participio(inf),
-  //   tú: inf => placeholder, //'tinhas ' + participio(inf),
-  //   nosotros: inf => placeholder, //'tínhamos ' + participio(inf),
-  //   vosotros: inf => placeholder, //'tínheis ' + participio(inf),
-  //   'ellos, Uds.': inf => placeholder, //'tinham ' + participio(inf),
-  // },
-  // 'futuro do presente composto do indicativo': {
-  //   examples: {
-  //     'Tomorrow, I will have read three more books': '?????',
-  //   },
-  //   yo: inf => placeholder, //'terei ' + participio(inf),
-  //   tú: inf => placeholder, //'terás ' + participio(inf),
-  //   'él, Ud.': inf => placeholder, //'terá ' + participio(inf),
-  //   nosotros: inf => placeholder, //'teremos ' + participio(inf),
-  //   vosotros: inf => placeholder, //'tereis ' + participio(inf),
-  //   'ellos, Uds.': inf => placeholder, //'terão ' + participio(inf),
-  // },
-  // 'futuro do pretérito composto do indicativo': {
-  //   examples: {
-  //     'I would have read the book': '?????',
-  //   },
-  //   'yo, él, Ud.': inf => placeholder, //'teria ' + participio(inf),
-  //   tú: inf => placeholder, //'terias ' + participio(inf),
-  //   nosotros: inf => placeholder, //'teríamos ' + participio(inf),
-  //   vosotros: inf => placeholder, //'teríeis ' + participio(inf),
-  //   'ellos, Uds.': inf => placeholder, //'teriam ' + participio(inf),
-  // },
-  // 'pretérito perfeito composto do subjuntivo': {
-  //   examples: {
-  //     'I hope you had already called the hospital': '?????',
-  //   },
-  //   'yo, él, Ud.': inf => placeholder, //'tenha ' + participio(inf),
-  //   tú: inf => placeholder, //'tenhas ' + participio(inf),
-  //   nosotros: inf => placeholder, //'tenhamos ' + participio(inf),
-  //   vosotros: inf => placeholder, //'tenhais ' + participio(inf),
-  //   'ellos, Uds.': inf => placeholder, //'tenham ' + participio(inf),
-  // },
-  // 'pretérito mais-que-perfeito composto do subjuntivo': {
-  //   examples: {
-  //     "If you had looked at the map, we wouldn't be in this mess": '?????',
-  //   },
-  //   'yo, él, Ud.': inf => placeholder, //'tivesse ' + participio(inf),
-  //   tú: inf => placeholder, //'tivesses ' + participio(inf),
-  //   nosotros: inf => placeholder, //'tivéssemos ' + participio(inf),
-  //   vosotros: inf => placeholder, //'tivestes ' + participio(inf),
-  //   'ellos, Uds.': inf => placeholder, //'tivessem ' + participio(inf),
-  // },
-  // 'futuro composto do subjuntivo': {
-  //   examples: {
-  //     "I'll tell you when I've finished the work": '?????',
-  //   },
-  //   'yo, él, Ud.': inf => placeholder, //'tiver ' + participio(inf),
-  //   tú: inf => placeholder, //'tiveres ' + participio(inf),
-  //   nosotros: inf => placeholder, //'tivermos ' + participio(inf),
-  //   vosotros: inf => placeholder, //'tiverdes ' + participio(inf),
-  //   'ellos, Uds.': inf => placeholder, //'tiverem ' + participio(inf),
-  // },
+
+  'subjuntivo: imperfecto': {
+    groups: {
+      'yo, él, ella, usted': ({ root, a, e }) => root + (a ? 'ara' : 'iera'),
+      tú: ({ root, a, e }) => root + (a ? 'aras' : 'ieras'),
+      nosotros: ({ root, a, e }) => root + (a ? 'aramos' : 'ieramos'),
+      'ellos, ellas, ustedes': ({ root, a, e }) => root + (a ? 'aran' : 'ieran'),
+    },
+  },
+
+  'subjuntivo compuesto: pretérito perfecto': {
+    groups: {
+      'yo, él, ella, usted': ({ participio }) => 'haya ' + participio,
+      tú: ({ participio }) => 'hayas ' + participio,
+      nosotros: ({ participio }) => 'hayamos ' + participio,
+      'ellos, ellas, ustedes': ({ participio }) => 'hayan ' + participio,
+    },
+  },
+
+  'subjuntivo compuesto: pluscuamperfecto': {
+    groups: {
+      'yo, él, ella, usted': ({ participio }) => 'hubiera ' + participio,
+      tú: ({ participio }) => 'hubieras ' + participio,
+      nosotros: ({ participio }) => 'hubieramos ' + participio,
+      'ellos, ellas, ustedes': ({ participio }) => 'hubieran ' + participio,
+    },
+  },
+
+  'imperativo: afirmativo': {
+    groups: {
+      'él, ella, usted': ({ root, a, e }) => root + (a ? 'e' : 'a'),
+      tú: ({ root, a, e }) => root + (a ? 'a' : 'e'),
+      nosotros: ({ root, a, e }) => root + (a ? 'emos' : 'amos'),
+      'ellos, ellas, ustedes': ({ root, a, e }) => root + (a ? 'en' : 'an'),
+    },
+  },
+
+  'imperativo: negativo': {
+    groups: {
+      'él, ella, usted': ({ root, a, e }) => 'no ' + root + (a ? 'e' : 'a'),
+      tú: ({ root, a, e }) => 'no ' + root + (a ? 'es' : 'as'),
+      nosotros: ({ root, a, e }) => 'no ' + root + (a ? 'emos' : 'amos'),
+      'ellos, ellas, ustedes': ({ root, a, e }) => 'no ' + root + (a ? 'en' : 'an'),
+    },
+  },
 }
+
+// tu: ({ root, a }) => root + (a ? 'as' : 'es'),
+
+// function tu(object) {
+//   const root = object.root
+//   const a = object.a
+//   if (a)
+//     return root + 'as'
+//   else
+//     return root + 'es'
+// }
 
 export const refine = (inf, conjugated) => {
   // if we need to refine the conjugated form to retain intended sounds
@@ -211,7 +367,17 @@ export const refine = (inf, conjugated) => {
   return conjugated
 }
 
-const buildTenses = (includeCompositeTenses, includeTu, includeVos) =>
+export const getVerbConjugationArgs = inf => {
+  return {
+    inf,
+    root: strip(inf),
+    a: inf.endsWith('ar'),
+    e: inf.endsWith('er'),
+    participio: participio(inf),
+  }
+}
+
+export const buildTenses = includeCompositeTenses =>
   Object.keys(tensesMap)
     .filter(k => includeCompositeTenses || !k.includes('composto'))
     .map(k => {
@@ -220,17 +386,17 @@ const buildTenses = (includeCompositeTenses, includeTu, includeVos) =>
         name: k,
         examples: tense.examples
           ? Object.keys(tense.examples).map(k => ({
-              english: k,
-              portuguese: tense.examples[k],
+              left: k,
+              right: tense.examples[k],
             }))
           : null,
-        groups: Object.keys(tense)
-          .filter(gk => gk != 'examples' && (includeTu || gk != 'tu') && (includeVos || gk != 'vós'))
+        groups: Object.keys(tense.groups)
+          // .filter(gk => (includeTu || gk != 'tu') && (includeVos || gk != 'vós'))
           .map(gk => ({
             name: gk,
-            func: w => refine(w, tense[gk](w)),
+            conjugate: args => {
+              return refine(args, tense.groups[gk](args))
+            },
           })),
       }
     })
-
-export default buildTenses

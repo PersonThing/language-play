@@ -14,15 +14,15 @@
     </label>
   </div>
 
-  <ConjugationTable {tenses} verbs={$verbs} />
+  <ConjugationTable {tenses} {verbStore} {getVerbConjugationArgs} />
 </div>
 
 <script>
-  import buildTenses from '../services/verb-tenses-pt.js'
+  import { buildTenses, getVerbConjugationArgs } from '../services/verb-tenses-pt.js'
   import LocalStorageStore from '../stores/local-storage-store.js'
   import ConjugationTable from './ConjugationTable.svelte'
 
-  const verbs = LocalStorageStore('verbs', ['gostar', 'comer', 'desistir'])
+  const verbStore = LocalStorageStore('verbs-pt', ['gostar', 'comer', 'desistir'])
 
   let includeTu = true
   let includeVos = false
@@ -30,4 +30,3 @@
 
   $: tenses = buildTenses(includeCompositeTenses, includeTu, includeVos)
 </script>
-

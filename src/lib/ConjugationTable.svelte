@@ -5,12 +5,12 @@
   </div>
 </form>
 
-{#if verbs && tenses}
+{#if $verbStore && tenses}
   <table>
     <thead>
       <tr>
         <th>pronouns</th>
-        {#each verbs as verb}
+        {#each $verbStore as verb}
           <th>{verb} <button on:click={() => removeVerb(verb)}>x</button></th>
         {/each}
       </tr>
@@ -20,7 +20,7 @@
         {#each tense.groups as group, i}
           {#if i == 0}
             <tr class="group-header">
-              <td colspan={verbs.length + 1}>
+              <td colspan={$verbStore.length + 1}>
                 <strong>{tense.name}</strong>
                 {#if tense.explanation}
                   <div class="explanation">{tense.explanation}</div>
@@ -28,9 +28,9 @@
                 {#if tense.examples}
                   {#each tense.examples as example}
                     <div class="example">
-                      <span>{example.english}</span>
+                      <span>{example.left}</span>
                       =
-                      <span>{example.portuguese}</span>
+                      <span>{example.right}</span>
                     </div>
                   {/each}
                 {/if}
@@ -40,8 +40,8 @@
 
           <tr>
             <td class="group-name"><em>{group.name}</em></td>
-            {#each verbs as infinitive}
-              <td>{group.func(infinitive)}</td>
+            {#each verbArgs as args}
+              <td>{group.conjugate(args)}</td>
             {/each}
           </tr>
         {/each}
@@ -51,17 +51,20 @@
 {/if}
 
 <script>
-  export let verbs
+  export let verbStore
   export let tenses
+  export let getVerbConjugationArgs // a function that gets necessary meta data for a given verb to be able to conjugate it
   let newVerb = ''
 
   const addVerb = () => {
-    const final = newVerb.substring(newVerb.length - 2, newVerb.length)
-    if (['ar', 'er', 'ir'].indexOf(final) < 0) return
-    verbs = [...verbs, newVerb]
+    const value = newVerb.toLowerCase().trim()
+    if (!/(a|e|i)r$/.test(value)) return
+    $verbStore = [...$verbStore.filter(v => v != value), value]
     newVerb = ''
   }
-  const removeVerb = verb => (verbs = [...verbs.filter(v => v != verb)])
+  const removeVerb = verb => ($verbStore = [...$verbStore.filter(v => v != verb)])
+
+  $: verbArgs = $verbStore.map(v => getVerbConjugationArgs(v))
 </script>
 
 <style lang="scss">
