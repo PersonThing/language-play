@@ -39,6 +39,11 @@ input {
   font-size: 16px;
 }
 
+select {
+  font-size: 1rem;
+  padding: 0.5rem;
+}
+
 .p1 {
   padding: 10px;
 }
@@ -49,6 +54,9 @@ input {
   gap: 10px;
   align-items: center;
   margin-bottom: 10px;
+}
+.flex-grow {
+  flex: 1;
 }
 
 .mb1 {

@@ -1,3 +1,181 @@
+/*
+  pronouns:
+    yo        eu, me
+    tú        tu, you         informal / closer / more familiar
+    vos       tu, you         informal - but only certain areas use it
+    usted     você, you         formal / older people / people you don't know / higher position
+
+    ustedes   vocês, you (pl)   only in Latin America
+    vosotros  vocês, you (pl)   only in Spain
+
+    él        ele, he
+    ella      ela, she
+    ellos     eles, them (m)
+    ellas     elas, them (f)
+
+llegar
+  colombia - jyegar
+  argentina/uruguay - chegar
+  peru - yegar
+    nosotros
+*/
+
+/*
+  verb tenses
+    simple
+      participio
+        comido
+          I have eaten
+          yo he comido
+          tu has comido
+
+      gerundio
+        comiendo
+          I am eating
+          yo estoy comiendo
+          tu estás comiendo
+          
+
+      presente
+        como / comes / come
+          Yo como
+          Tu comes
+
+      imperfecto
+        comía / comías / comía
+          yo comía
+          tu comías
+
+      pretérito (perfecto)
+        comí / comiste / comió
+          yo comí
+          tu comiste
+          tu dormiste
+          usted comió
+
+      futuro
+        comeré / comerás / comerá
+          yo comeré
+          tu comerás
+
+      condicional
+        comería / comerías / comería
+          me gustaría 
+
+          yo te gusto   you like me   I am something that you like
+          tu me gustas  I like you    you are something that I like
+              tu eres algo que me gusta
+
+          te gustaría comer pan?
+          you can't just say "te gustaría pan?" it sounds weird
+          gustaría needs a verb after
+          tiene sentido - 
+          tienes razón - 
+
+    composite
+      pretérito perfecto
+        he comido
+          I have eaten - yo he comido
+          you have eaten - tu has comido
+
+      pluscuamperfecto
+        había comido
+          I had eaten - yo había comido
+          you had eaten - tu habías comido
+
+      futuro perfecto
+        habré comido
+          I will have eaten in 2 hours - yo habré comido en dos horas
+      condicional perfecto
+        habría comido
+          I would have eaten  if I had money
+          yo habría comido    si yo tuviera dinero
+          eu teria comido     se eu tivesse dinheiro
+
+    subjuntivo
+      presente
+        coma / comas / coma
+          I want you to eat
+          yo quiero que comas - always sounds like quê
+          eu quero que comas
+
+          I hope you are well
+          yo espero que estés bien
+          eu espero que estejas bem
+
+      imperfecto
+        comiera / comieras / comiera - more common
+        o
+        comiese / comieses / comiese - people use it, but depends on place
+
+        se eu fosse rico   compraria um carro
+        si yo fuera rico   compraria un carro
+
+    subjunctive composite
+      pretérito perfecto
+        haya comido
+
+        I hope you have eaten
+        yo espero que hayas comido
+        yo espero que usted haya comido
+
+      pluscuamperfecto
+        hubiera comido - more common
+        o
+        hubiese comido
+
+        si yo hubiera sabido antes, yo no habria|hubiera ido
+
+    imperative
+      afirmativo
+        come / comas / coma
+
+        comete la comida (tu)
+        come la comida (tu)
+        coma la comida (usted)
+        comase la comida (usted)
+
+      negativo
+        no comas / no coma
+
+        don't eat that!
+        no comas eso! tu
+        no come eso! - no puedo decir eso
+        no coma eso! usted
+*/
+
+  /*
+    I don't think it will take much time
+    I don't believe it will take much time
+
+    eu não acho que vai levar muito tempo
+    yo no creo que vaya a tomar mucho tiempo
+
+    yo voy a trabajar
+    yo voy a ir a trabajar
+    yo voy al trabajo
+
+    yo necesito desafiarme
+    yo quiero desafiarte
+    
+    yo quiero desafiarlo - him
+              desafiarla - her
+              desafiarlos - them m or you plural
+              desafiarlas - them f
+              desafiarnos - us
+  */
+  /*
+
+    subjuntivo
+      imperfecto
+        comiera / comieras / comiera - more common
+        o
+        comiese / comieses / comiese - people use it, but depends on place
+
+        se eu fosse rico   compraria um carro
+        si yo fuera rico   compraria un carro
+  */
+
 import { participio, strip } from './verb-tenses-utils.js'
 
 const tensesMap = {

@@ -1,5 +1,4 @@
 <div class="p1">
-  <div class="mb1">Work in progress - missing many tenses, not accurate - don't trust this page :)</div>
   <!-- <div class="flex">
     <label for="inclui-tempos-compoostos">
       <input name="inclui-tempos-compoostos" id="inclui-tempos-compoostos" type="checkbox" bind:checked={includeCompositeTenses} />

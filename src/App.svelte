@@ -2,6 +2,7 @@
   <nav>
     <a href="/pt" use:link use:active>Portugués</a>
     <a href="/es" use:link use:active>Español</a>
+    <a href="/taboo" use:link use:active>Taboo</a>
   </nav>
 
   <Router basepath="/language-play" {routes} />
@@ -12,10 +13,12 @@
   import active from 'svelte-spa-router/active'
   import ConjugatorPT from './lib/ConjugatorPT.svelte'
   import ConjugatorES from './lib/ConjugatorES.svelte'
+  import Taboo from './lib/Taboo.svelte'
 
   const routes = {
     '/pt': ConjugatorPT,
     '/es': ConjugatorES,
+    '/taboo/:collectionKey?': Taboo,
     '*': ConjugatorPT,
   }
 </script>
