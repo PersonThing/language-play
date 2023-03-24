@@ -5,7 +5,7 @@
     {/each}
   </select>
 
-  {#if value && $collections[value]}
+  {#if value && $collections[value] != null}
     <button on:click={editCollection}>Edit cards</button>
     <!-- <button on:click={deleteCollection}>Delete collection</button> -->
   {/if}
@@ -69,6 +69,7 @@
     newCollectionName = ''
     newCollection = [createCard()]
     isAddingCollection = true
+    editingCollection = null
   }
 
   function saveNewWordCollection() {
