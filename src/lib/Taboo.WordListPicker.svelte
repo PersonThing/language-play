@@ -11,7 +11,7 @@
   {/if}
 
   <div class="flex-grow" />
-  <button on:click={addCollection} title="">Create collection</button>
+  <button on:click={addCollection}>Create collection</button>
   <button on:click={resetCollections}>Reset collections</button>
 </div>
 
@@ -31,6 +31,7 @@
   </div>
 {:else if editingCollection}
   <div class="edit-word-collection">
+    <p style="mb1">Changes you make are saved only on your device</p>
     <button type="button" on:click={saveCollectionChanges}>Save cards</button>
     <button type="button" on:click={() => (editingCollection = null)}>Cancel</button>
 
